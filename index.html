@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Anniversary</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #a770ef, #cf8bf3, #fdb99b);
+      color: white;
+    }
+    .page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+      position: absolute;
+      width: 100%;
+      transition: transform 1s ease-in-out, opacity 1s;
+      opacity: 0;
+      transform: scale(0.8);
+      z-index: 0;
+    }
+    .visible {
+      transform: scale(1);
+      opacity: 1;
+      z-index: 1;
+    }
+    button {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      background: white;
+      color: #a770ef;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      z-index: 2;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+    .heart {
+      font-size: 2rem;
+      margin-top: 1rem;
+    }
+    .message {
+      width: 80%;
+      font-size: 1.5rem;
+      text-align: center;
+      line-height: 2.2rem;
+    }
+    .floating-images {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .floating-images img {
+      position: absolute;
+      width: 120px;
+      height: auto;
+      opacity: 0;
+      animation: floatUp 20s infinite linear;
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-120vh); opacity: 0; }
+    }
+    .video-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    video {
+      width: 80%;
+      max-width: 600px;
+      border-radius: 16px;
+      margin-top: 20px;
+    }
+    .confetti {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+  <canvas class="confetti" id="confetti"></canvas>
+
+  <div class="page visible" id="page1">
+    <h1>To The Love Of My Life</h1>
+    <h2>Daniela</h2>
+    <div class="heart">❤️</div>
+    <button onclick="nextPage()">Next</button>
+  </div>
+
+  <div class="page" id="page2">
+    <div class="message">
+      Thank You For Always Being With Me And Loving Me With All Your Heart. You Are The Best Girlfriend EVER. Time Has Absolutely Flown By Ever Since I Met You, You Haven't Left My Mind. You Showed Me True Love, And Have Taught Me So Much, Thank You. Words Can't Describe How Grateful I Am For You Dani. God Bless You. He Has Already Blessed Me With You. Nothing Can Compare To The Joy You Give Me. I'm Proud Of Us. I'm Proud Of You. Eres El Amor De Mi Vida, And I Can't Wait To Spend My Whole Vida With You. I Will Forever Be Here For You, Fighting For You, Protecting You, And Loving You. Thank You For The Countless Memories And I Can't Wait To Make Even More My Love. To Infinity And Beyond. I Love You. Happy 1 Year Anniversary.
+    </div>
+    <button onclick="nextPage()">Next</button>
+  </div>
+
+  <div class="page" id="page3">
+    <div class="floating-images" id="heart-container"></div>
+    <button onclick="nextPage()" style="bottom: 120px; position: relative; z-index: 2;">Next</button>
+  </div>
+
+  <div class="page" id="page4">
+    <div class="video-container">
+      <h2>So, Here Is A Little Gift To The Best Girlfriend Ever.</h2>
+      <video controls autoplay muted>
+        <source src="video.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </div>
+
+  <script>
+    let currentPage = 1;
+    let confettiActive = false;
+
+    function nextPage() {
+      document.getElementById(`page${currentPage}`).classList.remove('visible');
+      currentPage++;
+      if (currentPage <= 4) {
+        document.getElementById(`page${currentPage}`).classList.add('visible');
+        if (currentPage >= 2) startConfetti();
+        if (currentPage === 3) animateHeartImages();
+      }
+    }
+
+    function startConfetti() {
+      if (confettiActive) return;
+      confettiActive = true;
+
+      const confettiCanvas = document.getElementById('confetti');
+      const ctx = confettiCanvas.getContext('2d');
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+
+      let confetti = [];
+      for (let i = 0; i < 150; i++) {
+        confetti.push({
+          x: Math.random() * confettiCanvas.width,
+          y: Math.random() * confettiCanvas.height,
+          r: Math.random() * 6 + 4,
+          d: Math.random() * 100,
+          color: `hsl(${Math.random() * 360}, 100%, 70%)`,
+          tilt: Math.floor(Math.random() * 10) - 10,
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        for (let i = 0; i < confetti.length; i++) {
+          const p = confetti[i];
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, false);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+        }
+        update();
+      }
+
+      function update() {
+        for (let i = 0; i < confetti.length; i++) {
+          let p = confetti[i];
+          p.y += Math.cos(p.d) + 1 + p.r / 2;
+          p.x += Math.sin(p.d);
+          if (p.y > confettiCanvas.height) {
+            p.y = -10;
+            p.x = Math.random() * confettiCanvas.width;
+          }
+        }
+      }
+
+      setInterval(draw, 30);
+    }
+
+    function animateHeartImages() {
+      const container = document.getElementById('heart-container');
+      container.innerHTML = '';
+      const total = 10;
+      for (let i = 0; i < total; i++) {
+        const angle = (i / total) * 2 * Math.PI;
+        const x = 16 * Math.pow(Math.sin(angle), 3);
+        const y = 13 * Math.cos(angle) - 5 * Math.cos(2 * angle) - 2 * Math.cos(3 * angle) - Math.cos(4 * angle);
+        const img = document.createElement('img');
+        img.src = `image${i + 1}.jpg`;
+        img.style.left = `calc(50% + ${x * 2.5}vw - 50px)`;
+        img.style.top = `calc(45% - ${y * 2.5}vh)`;
+        container.appendChild(img);
+
+        setTimeout(() => {
+          img.style.opacity = '1';
+        }, i * 200);
+      }
+    }
+  </script>
+</body>
+</html>
